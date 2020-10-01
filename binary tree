@@ -1,0 +1,192 @@
+//code by vikash choudhary
+#include<iostream>
+#include<queue>
+#include<bits/stdc++.h>
+using namespace std;
+
+struct Node{
+    int data;
+    Node* left;
+    Node* right;
+};
+// add a new node
+Node* add_node(int data)
+{
+    Node* new_node = new Node();
+    new_node->data=data;
+    new_node->left =NULL;
+    new_node->right= NULL;
+    return(new_node);
+}
+// print inorder
+void in_order(Node* node){
+    if(node==NULL)
+    return;
+    
+    in_order(node->left);
+    cout<<node->data<<" ";
+    in_order(node->right);
+}
+// print pre order
+void pre_order(Node* node){
+     if(node==NULL)
+    return;
+    
+    cout<<node->data<<" ";
+    in_order(node->left);
+    in_order(node->right);
+}
+// print post order
+void post_order(Node* node){
+     if(node==NULL)
+    return;
+    
+    in_order(node->left);
+    in_order(node->right);
+    cout<<node->data<<" ";
+}
+// print level order
+void level_order(Node* root)
+{
+    if(root==NULL)
+    return;
+    queue<Node*>q;
+    q.push(root);
+
+    while(q.empty()== false)
+    {
+        Node *node = q.front();
+        cout<<node->data<<" ";
+        q.pop();
+
+        if(node->left !=NULL)
+        q.push(node->left);
+        if(node->right != NULL)
+        q.push(node->right);
+    }
+}
+//add in level order
+void add_level_order(Node* root,int data)
+{
+    queue<Node*> q;
+    q.push(root);
+    while(q.empty()==false)
+    {
+        Node* node = q.front();
+        q.pop();
+        if(node->left==NULL)
+        {
+            node->left=add_node(data);
+            break;
+        }
+        else q.push(node->left);
+        if(node->right==NULL)
+        {
+            node->right=add_node(data);
+            break;
+        }
+        else q.push(node->right);
+    }
+}
+// size of tree
+int tree_size(Node* root)
+{
+    if(root==NULL)
+    return 0;
+    int left = tree_size(root->left);
+    int right = tree_size(root->right);
+    int ans = left+right+1;
+    return ans;
+}
+//sum of nodes
+int sum_nodes(Node* root)
+{   
+    if(root==NULL)
+    return 0;
+    int left = sum_nodes(root->left);
+    int right = sum_nodes(root->right);
+    int ans = left+right+root->data;
+    return ans;
+}
+//max node
+int max_node(Node* root)
+{
+    if(root==NULL)
+    return INT_MIN;
+    int left = max_node(root->left);
+    int right = max_node(root->right);
+    int ans= max(max(left,right),root->data);
+    return ans;
+}
+// height
+int tree_height(Node* root)
+{
+    if(root==NULL)
+    return 0;
+    int left = tree_height(root->left);
+    int right = tree_height(root->right);
+    int ans = max(left,right)+1;
+    return ans;
+}
+//find node and print its path
+bool find_node(Node* root,int data,vector<int>&ans)
+{   
+    
+    if(root==NULL)
+    return false;
+    if(root->data==data)
+    {
+        ans.push_back(root->data);
+        return true;
+    }
+
+    bool foundl = find_node(root->left,data,ans);
+    if(foundl)
+    {   
+        ans.push_back(root->data);
+        return true;
+    }    
+    bool foundr =find_node(root->right,data,ans);
+    if(foundr)
+    {
+        ans.push_back(root->data);
+        return true;
+    }
+
+    return false;
+
+}
+
+
+
+int main(){
+    Node* root = add_node(1);
+    root->left = add_node(2);
+    root->right= add_node(3);
+    root->right->left=add_node(6);
+    root->right->right=add_node(7);
+    cout<<"In order:";
+    in_order(root);
+    cout<<"\n Pre order:";
+    pre_order(root);
+    cout<<"\n Post order:";
+    post_order(root);
+    cout<<"\n Level order traversal:";
+    level_order(root);
+    cout<<"\n Add 4 and 5 in level order:";
+    add_level_order(root,4);
+    add_level_order(root,5);
+    level_order(root);
+    cout<<"\n Size of Tree is:"<<tree_size(root)<<endl;
+    cout<<"sum of nodes of Tree is:"<<sum_nodes(root)<<endl;
+    cout<<"max node of Tree is:"<<max_node(root)<<endl;
+    cout<<"height of Tree is:"<<tree_height(root)<<endl;
+
+    vector<int> rev_path;
+    cout<<"Found Node=(5): "<<find_node(root,5,rev_path)<<endl;
+    cout<<"path from node=(5) to root:"<<endl;
+    for(int i=0;i<rev_path.size();i++)
+    cout<<rev_path[i]<<" ";
+
+    return 0;
+}
